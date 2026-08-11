@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Records{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+  <div>
+    <h1 class="page-title">Attendance Log Records</h1>
+    <p class="page-subtitle">View, search, filter, and export biometric attendance logs</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="{{ url_for('api.export_csv', start_date=start_date, end_date=end_date, search=search, course=selected_course, division=selected_division) }}" class="btn btn-secondary">📥 Export CSV</a>
+    <a href="{{ url_for('api.export_excel', start_date=start_date, end_date=end_date, search=search, course=selected_course, division=selected_division) }}" class="btn btn-primary">📊 Export Excel (.xlsx)</a>
+  </div>
+</div>
+
+<!-- Search & Filter Controls -->
+<div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
+  <form method="GET" action="{{ url_for('admin.records') }}" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div style="flex: 1.5; min-width: 180px;">
+      <label class="form-label">Search Student</label>
+      <input type="text" name="search" class="form-control" placeholder="Name, Roll No, Student ID..." value="{{ search }}">
+    </div>
+    <div style="flex: 1; min-width: 140px;">
+      <label class="form-label">Start Date</label>
+      <input type="date" name="start_date" class="form-control" value="{{ start_date }}">
+    </div>
+    <div style="flex: 1; min-width: 140px;">
+      <label class="form-label">End Date</label>
+      <input type="date" name="end_date" class="form-control" value="{{ end_date }}">
+    </div>
+    <div style="flex: 1; min-width: 120px;">
+      <label class="form-label">Course</label>
+      <select name="course" class="form-select">
+        <option value="">All Courses</option>
+        {% for c in courses %}
+          <option value="{{ c }}" {% if selected_course == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="flex: 1; min-width: 120px;">
+      <label class="form-label">Division</label>
+      <select name="division" class="form-select">
+        <option value="">All Divisions</option>
+        {% for d in divisions %}
+          <option value="{{ d }}" {% if selected_division == d %}selected{% endif %}>{{ d }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+      <button type="submit" class="btn btn-secondary">🔍 Filter</button>
+      <a href="{{ url_for('admin.records') }}" class="btn btn-secondary">Reset</a>
+    </div>
+  </form>
+</div>
+
+<!-- Attendance Records Table -->
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Sr. No.</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Student ID</th>
+        <th>Roll No</th>
+        <th>Student Name</th>
+        <th>Course & Division</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if records %}
+        {% for r in records %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td><strong>{{ r.attendance_date }}</strong></td>
+          <td>{{ r.attendance_time }}</td>
+          <td><code>{{ r.student_id }}</code></td>
+          <td><span class="badge badge-success">{{ r.roll_number }}</span></td>
+          <td><strong>{{ r.student_name }}</strong></td>
+          <td>{{ r.course }} - {{ r.division }}</td>
+          <td><span class="badge badge-success">{{ r.status }}</span></td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">
+            No attendance records matching filter criteria.
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

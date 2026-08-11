@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin Panel{% endblock %} - Biometric Attendance System</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Firebase JS SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9XnOEmhr9TCjXul44_82_CdoUEN7PRKo",
+      authDomain: "attendance-a6f14.firebaseapp.com",
+      projectId: "attendance-a6f14",
+      storageBucket: "attendance-a6f14.firebasestorage.app",
+      messagingSenderId: "446821265991",
+      appId: "1:446821265991:web:fc9299c36a6b109e04b762",
+      measurementId: "G-2FZRY9SVV7"
+    };
+    if (typeof firebase !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+      if (firebase.analytics) firebase.analytics();
+      console.log("[Firebase] Initialized for project attendance-a6f14");
+    }
+  </script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="app-container">
+    {% if current_user.is_authenticated %}
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-logo">FA</div>
+        <div>
+          <div class="sidebar-brand-title">FaceAttend</div>
+          <div class="sidebar-brand-subtitle">Biometric System v1.0</div>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+          <a href="{{ url_for('admin.dashboard') }}">📊 Dashboard</a>
+        </li>
+        <li class="sidebar-item {% if request.endpoint in ['admin.students', 'admin.register_student', 'admin.edit_student', 'admin.register_face'] %}active{% endif %}">
+          <a href="{{ url_for('admin.students') }}">🎓 Students</a>
+        </li>
+        <li class="sidebar-item {% if request.endpoint == 'admin.register_student' %}active{% endif %}">
+          <a href="{{ url_for('admin.register_student') }}">➕ Register Student</a>
+        </li>
+        <li class="sidebar-item {% if request.endpoint == 'admin.records' %}active{% endif %}">
+          <a href="{{ url_for('admin.records') }}">📋 Attendance Records</a>
+        </li>
+        <li class="sidebar-item {% if request.endpoint == 'admin.reports' %}active{% endif %}">
+          <a href="{{ url_for('admin.reports') }}">📈 Reports</a>
+        </li>
+        <li class="sidebar-item">
+          <a href="{{ url_for('attendance.kiosk') }}" target="_blank">📹 Biometric Kiosk ↗</a>
+        </li>
+        <li class="sidebar-item {% if request.endpoint == 'admin.privacy' %}active{% endif %}">
+          <a href="{{ url_for('admin.privacy') }}">🔒 Privacy & Policy</a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary" style="width: 100%;">🚪 Logout</a>
+      </div>
+    </aside>
+    {% endif %}
+
+    <!-- Main Content Area -->
+    <main class="main-content" {% if not current_user.is_authenticated %}style="max-width: 100vw; justify-content: center; align-items: center;"{% endif %}>
+      <!-- Flash Messages -->
+      <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

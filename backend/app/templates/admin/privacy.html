@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy & Biometric Policy{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+  <div>
+    <h1 class="page-title">Biometric Privacy & Data Policy</h1>
+    <p class="page-subtitle">Information on biometric data handling, security, and storage</p>
+  </div>
+</div>
+
+<div class="card" style="max-width: 900px; line-height: 1.7; font-size: 0.95rem;">
+  <h2 style="font-size: 1.25rem; font-weight: 700; color: #a5b4fc; margin-bottom: 0.75rem;">1. Purpose of Data Collection</h2>
+  <p>This Face Recognition Biometric Attendance System collects facial data solely for authenticating student identity and automatically logging daily class attendance.</p>
+
+  <h2 style="font-size: 1.25rem; font-weight: 700; color: #a5b4fc; margin-top: 1.5rem; margin-bottom: 0.75rem;">2. Local Vector Embedding Storage</h2>
+  <p><strong>Raw photographs are not permanently stored.</strong> When a student registers their face, the system extracts a mathematical feature vector (embedding) of numbers representing face geometry. This vector is stored locally in the college database.</p>
+
+  <h2 style="font-size: 1.25rem; font-weight: 700; color: #a5b4fc; margin-top: 1.5rem; margin-bottom: 0.75rem;">3. Data Security & Third-Party Privacy</h2>
+  <ul style="margin-left: 1.5rem; color: var(--text-muted);">
+    <li>All processing occurs locally on the campus server/laptop.</li>
+    <li>No facial data or embeddings are transmitted to cloud services or third-party APIs.</li>
+    <li>Admin routes and API endpoints are protected using session-based authentication and password hashing (Werkzeug).</li>
+    <li>SQL database queries use SQLAlchemy ORM to prevent SQL injection vulnerabilities.</li>
+  </ul>
+
+  <h2 style="font-size: 1.25rem; font-weight: 700; color: #a5b4fc; margin-top: 1.5rem; margin-bottom: 0.75rem;">4. Right to Deletion & Re-registration</h2>
+  <p>Students or authorized administrators can request complete deletion of biometric embeddings at any time through the Student Directory menu. Re-registering face data overwrites all prior mathematical embeddings.</p>
+</div>
+{% endblock %}

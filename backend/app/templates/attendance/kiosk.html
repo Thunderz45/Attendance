@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Biometric Attendance Kiosk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/kiosk.css') }}">
+  <!-- Firebase JS SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyA9XnOEmhr9TCjXul44_82_CdoUEN7PRKo",
+      authDomain: "attendance-a6f14.firebaseapp.com",
+      projectId: "attendance-a6f14",
+      storageBucket: "attendance-a6f14.firebasestorage.app",
+      messagingSenderId: "446821265991",
+      appId: "1:446821265991:web:fc9299c36a6b109e04b762",
+      measurementId: "G-2FZRY9SVV7"
+    };
+    if (typeof firebase !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+      if (firebase.analytics) firebase.analytics();
+      console.log("[Firebase] Kiosk initialized for project attendance-a6f14");
+    }
+  </script>
+</head>
+<body>
+  <div class="kiosk-wrapper">
+    <div class="kiosk-header">
+      <div class="kiosk-title">FACE BIOMETRIC ATTENDANCE KIOSK</div>
+      <div class="kiosk-clock">
+        <span id="kiosk-clock-date">--</span> | <span id="kiosk-clock-time" style="color: #38bdf8; font-weight: 700;">--:--:--</span>
+      </div>
+    </div>
+
+    <div class="kiosk-container">
+      <!-- Left Column: Camera Preview -->
+      <div class="camera-card">
+        <video id="kiosk-video" class="camera-feed" autoplay playsinline muted></video>
+        <canvas id="kiosk-canvas" style="display: none;"></canvas>
+        
+        <!-- Target Overlay Guide Box -->
+        <div class="face-guide-overlay">
+          <div id="scan-line" class="face-scan-line"></div>
+        </div>
+      </div>
+
+      <!-- Right Column: Status & Recognized Student Card -->
+      <div class="status-card">
+        <div>
+          <div style="font-size: 0.8rem; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: 0.05em;">SYSTEM STATUS</div>
+          <div id="status-badge" class="status-badge status-ready">Initializing Camera...</div>
+        </div>
+
+        <div class="student-info-panel">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #a5b4fc; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem;">
+            RECOGNIZED STUDENT BIOMETRICS
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Name:</span>
+            <span id="info-name" class="info-value">--</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Roll / ID:</span>
+            <span id="info-roll" class="info-value">--</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Course:</span>
+            <span id="info-course" class="info-value">--</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Attendance:</span>
+            <span id="info-status" class="info-value">--</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">Logged Time:</span>
+            <span id="info-time" class="info-value">--</span>
+          </div>
+        </div>
+
+        <div style="text-align: center; font-size: 0.75rem; color: #64748b;">
+          Position your face clearly inside the frame guide box.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/kiosk.js') }}"></script>
+</body>
+</html>

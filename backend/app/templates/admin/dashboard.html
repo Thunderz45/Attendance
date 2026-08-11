@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+  <div>
+    <h1 class="page-title">Dashboard Overview</h1>
+    <p class="page-subtitle">Real-time attendance summary for {{ stats.target_date }}</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="{{ url_for('attendance.kiosk') }}" target="_blank" class="btn btn-primary">📹 Open Kiosk Mode</a>
+    <a href="{{ url_for('admin.register_student') }}" class="btn btn-secondary">➕ Add Student</a>
+  </div>
+</div>
+
+<!-- KPI Cards Grid -->
+<div class="grid-cards">
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Total Students</span>
+      <div class="stat-icon icon-purple">🎓</div>
+    </div>
+    <div class="stat-value">{{ stats.total_students }}</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Present Today</span>
+      <div class="stat-icon icon-green">✅</div>
+    </div>
+    <div class="stat-value" style="color: #34d399;">{{ stats.present_today }}</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Absent Today</span>
+      <div class="stat-icon icon-red">❌</div>
+    </div>
+    <div class="stat-value" style="color: #f87171;">{{ stats.absent_today }}</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Attendance %</span>
+      <div class="stat-icon icon-cyan">📈</div>
+    </div>
+    <div class="stat-value">{{ stats.attendance_percentage }}%</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Registered Faces</span>
+      <div class="stat-icon icon-purple">👤</div>
+    </div>
+    <div class="stat-value">{{ stats.registered_faces }} / {{ stats.total_students }}</div>
+  </div>
+</div>
+
+<!-- Recent Activity Table -->
+<div class="card" style="margin-top: 1rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+    <h3 style="font-weight: 700; font-size: 1.1rem;">Recent Attendance Logs (Today)</h3>
+    <a href="{{ url_for('admin.records') }}" style="color: #818cf8; font-size: 0.875rem; text-decoration: none; font-weight: 600;">View All Records →</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Student ID</th>
+          <th>Roll No</th>
+          <th>Name</th>
+          <th>Class</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if stats.recent_attendances %}
+          {% for r in stats.recent_attendances %}
+          <tr>
+            <td><strong>{{ r.attendance_time }}</strong></td>
+            <td>{{ r.student_id }}</td>
+            <td><span class="badge badge-success">{{ r.roll_number }}</span></td>
+            <td>{{ r.student_name }}</td>
+            <td>{{ r.course }} - {{ r.division }}</td>
+            <td><span class="badge badge-success">{{ r.status }}</span></td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+              No attendance logged yet for today. Open the Biometric Kiosk to scan faces.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Student - {{ student.name }}{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+  <div>
+    <h1 class="page-title">Edit Student Details</h1>
+    <p class="page-subtitle">Update profile for Roll No {{ student.roll_number }} ({{ student.student_id }})</p>
+  </div>
+  <a href="{{ url_for('admin.students') }}" class="btn btn-secondary">← Back to Directory</a>
+</div>
+
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+  <form method="POST" action="{{ url_for('admin.edit_student', student_id=student.id) }}">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+      <div class="form-group">
+        <label class="form-label" for="name">Full Name *</label>
+        <input type="text" id="name" name="name" class="form-control" value="{{ student.name }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Roll Number (Read-only)</label>
+        <input type="text" class="form-control" value="{{ student.roll_number }}" disabled>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Student ID (Read-only)</label>
+        <input type="text" class="form-control" value="{{ student.student_id }}" disabled>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="course">Course / Department *</label>
+        <input type="text" id="course" name="course" class="form-control" value="{{ student.course }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="year">Year *</label>
+        <select id="year" name="year" class="form-select" required>
+          <option value="1st Year" {% if student.year == '1st Year' %}selected{% endif %}>1st Year</option>
+          <option value="2nd Year" {% if student.year == '2nd Year' %}selected{% endif %}>2nd Year</option>
+          <option value="3rd Year" {% if student.year == '3rd Year' %}selected{% endif %}>3rd Year</option>
+          <option value="4th Year" {% if student.year == '4th Year' %}selected{% endif %}>4th Year</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="division">Division / Section *</label>
+        <input type="text" id="division" name="division" class="form-control" value="{{ student.division }}" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" name="email" class="form-control" value="{{ student.email or '' }}">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="phone">Phone Number</label>
+        <input type="text" id="phone" name="phone" class="form-control" value="{{ student.phone or '' }}">
+      </div>
+    </div>
+
+    <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+      <a href="{{ url_for('admin.students') }}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

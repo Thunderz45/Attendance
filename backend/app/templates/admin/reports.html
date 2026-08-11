@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Reports{% endblock %}
+
+{% block content %}
+<div class="header-bar">
+  <div>
+    <h1 class="page-title">Attendance Reports & Analytics</h1>
+    <p class="page-subtitle">Summary breakdown for date: <strong>{{ selected_date }}</strong></p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="{{ url_for('admin.reports', preset='today') }}" class="btn {% if date_preset == 'today' %}btn-primary{% else %}btn-secondary{% endif %}">Today</a>
+    <a href="{{ url_for('admin.reports', preset='yesterday') }}" class="btn {% if date_preset == 'yesterday' %}btn-primary{% else %}btn-secondary{% endif %}">Yesterday</a>
+    <form method="GET" action="{{ url_for('admin.reports') }}" style="display: flex; gap: 0.5rem;">
+      <input type="hidden" name="preset" value="custom">
+      <input type="date" name="date" class="form-control" value="{{ selected_date }}" style="width: auto;" onchange="this.form.submit()">
+    </form>
+  </div>
+</div>
+
+<!-- Stats Overview -->
+<div class="grid-cards">
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Total Active Students</span>
+      <div class="stat-icon icon-purple">🎓</div>
+    </div>
+    <div class="stat-value">{{ stats.total_students }}</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Present</span>
+      <div class="stat-icon icon-green">✅</div>
+    </div>
+    <div class="stat-value" style="color: #34d399;">{{ stats.present_today }}</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Absent (Calculated)</span>
+      <div class="stat-icon icon-red">❌</div>
+    </div>
+    <div class="stat-value" style="color: #f87171;">{{ stats.absent_today }}</div>
+  </div>
+
+  <div class="card">
+    <div class="stat-header">
+      <span class="stat-label">Attendance Rate</span>
+      <div class="stat-icon icon-cyan">📊</div>
+    </div>
+    <div class="stat-value">{{ stats.attendance_percentage }}%</div>
+  </div>
+</div>
+
+<!-- Present vs Absent Breakdown Grid -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+  <!-- Present Students -->
+  <div class="card">
+    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #34d399;">✅ Present Students ({{ present_records|length }})</h3>
+    <div class="table-responsive" style="max-height: 400px;">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if present_records %}
+            {% for r in present_records %}
+            <tr>
+              <td><span class="badge badge-success">{{ r.roll_number }}</span></td>
+              <td>{{ r.student_name }}</td>
+              <td>{{ r.course }} - {{ r.division }}</td>
+              <td>{{ r.attendance_time }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No present records for selected date.</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Absent Students -->
+  <div class="card">
+    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #f87171;">❌ Absent Students ({{ absent_students|length }})</h3>
+    <div class="table-responsive" style="max-height: 400px;">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if absent_students %}
+            {% for s in absent_students %}
+            <tr>
+              <td><span class="badge badge-danger">{{ s.roll_number }}</span></td>
+              <td>{{ s.name }}</td>
+              <td>{{ s.course }} - {{ s.division }}</td>
+              <td><span class="badge badge-danger">ABSENT</span></td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No absent students for selected date (100% Attendance!).</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
