@@ -9,3 +9,4 @@ if ROOT_DIR not in sys.path:
 from backend.app import create_app
 
 app = create_app()
+handler = app

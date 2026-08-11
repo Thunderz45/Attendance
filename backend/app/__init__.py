@@ -26,8 +26,14 @@ def create_app(config_class=Config):
                 static_folder='static')
     app.config.from_object(config_class)
 
-    # Ensure instance folder exists for SQLite DB
-    os.makedirs(app.instance_path, exist_ok=True)
+    # Ensure instance folder exists or use /tmp on Vercel read-only filesystem
+    if os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'):
+        app.instance_path = '/tmp'
+    else:
+        try:
+            os.makedirs(app.instance_path, exist_ok=True)
+        except Exception:
+            app.instance_path = '/tmp'
 
     # Initialize extensions
     db.init_app(app)
