@@ -4,6 +4,10 @@ from ..models import Admin
 
 auth_bp = Blueprint('auth', __name__)
 
+@auth_bp.route('/')
+def index():
+    return redirect(url_for('attendance.kiosk'))
+
 @auth_bp.route('/admin/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
