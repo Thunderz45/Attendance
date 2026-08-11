@@ -8,7 +8,14 @@ BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__fil
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'default-dev-secret-key-2026')
     db_env = os.environ.get('DATABASE_URL')
-    if db_env and db_env.startswith('sqlite:///'):
+
+    if os.environ.get('VERCEL') or os.environ.get('VERCEL_ENV'):
+        # On Vercel serverless environment, filesystem is read-only except /tmp
+        if not db_env:
+            SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/attendance.db'
+        else:
+            SQLALCHEMY_DATABASE_URI = db_env
+    elif db_env and db_env.startswith('sqlite:///'):
         rel_path = db_env.replace('sqlite:///', '')
         if not os.path.isabs(rel_path):
             abs_db_path = os.path.abspath(os.path.join(BASE_DIR, rel_path))
