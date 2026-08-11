@@ -1,5 +1,6 @@
 from datetime import datetime, date
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+# pyrefly: ignore [missing-import]
 from flask_login import login_required
 from ..models import db, Student, FaceEmbedding, Attendance
 from ..services.report_service import report_service
@@ -103,7 +104,7 @@ def register_student():
 @admin_bp.route('/students/<int:student_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_student(student_id):
-    student = Student.query.get_or_404(student_id)
+    student = db.get_or_404(Student, student_id)
 
     if request.method == 'POST':
         student.name = request.form.get('name', '').strip()
@@ -122,7 +123,7 @@ def edit_student(student_id):
 @admin_bp.route('/students/<int:student_id>/delete', methods=['POST'])
 @login_required
 def delete_student(student_id):
-    student = Student.query.get_or_404(student_id)
+    student = db.get_or_404(Student, student_id)
     # Soft delete (deactivate)
     student.active = False
     db.session.commit()
@@ -132,13 +133,13 @@ def delete_student(student_id):
 @admin_bp.route('/students/<int:student_id>/register-face', methods=['GET', 'POST'])
 @login_required
 def register_face(student_id):
-    student = Student.query.get_or_404(student_id)
+    student = db.get_or_404(Student, student_id)
     return render_template('admin/register_face.html', student=student)
 
 @admin_bp.route('/students/<int:student_id>/save-face', methods=['POST'])
 @login_required
 def save_face(student_id):
-    student = Student.query.get_or_404(student_id)
+    student = db.get_or_404(Student, student_id)
 
     data = request.get_json() or {}
     images = data.get('images', [])
@@ -206,7 +207,7 @@ def save_face(student_id):
 @admin_bp.route('/students/<int:student_id>/remove-face', methods=['POST'])
 @login_required
 def remove_face(student_id):
-    student = Student.query.get_or_404(student_id)
+    student = db.get_or_404(Student, student_id)
     if student.face_embedding:
         db.session.delete(student.face_embedding)
         db.session.commit()

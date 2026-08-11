@@ -21,7 +21,7 @@ class FirebaseService:
             self.db = firestore.client()
             logger.info("Firebase Admin SDK initialized successfully for project attendance-a6f14.")
         except Exception as e:
-            logger.warning(f"Firebase Admin SDK initialization notice: {str(e)}. Using Firestore REST API fallback.")
+            logger.info("Firebase Admin SDK default credentials not present. Using Firestore REST API handler.")
             self.db = None
 
     def sync_student(self, student_dict):

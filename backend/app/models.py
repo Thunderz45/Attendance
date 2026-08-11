@@ -13,7 +13,7 @@ class Admin(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(120), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -38,8 +38,8 @@ class Student(db.Model):
     email = db.Column(db.String(120), nullable=True)
     phone = db.Column(db.String(20), nullable=True)
     active = db.Column(db.Boolean, default=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     # Relationships
     face_embedding = db.relationship('FaceEmbedding', backref='student', uselist=False, cascade='all, delete-orphan')
@@ -77,8 +77,8 @@ class FaceEmbedding(db.Model):
     embedding_data = db.Column(db.Text, nullable=False)  # JSON serialized list of floats
     sample_count = db.Column(db.Integer, default=1)
     quality_score = db.Column(db.Float, default=1.0)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     def set_embedding(self, embedding_vector):
         if hasattr(embedding_vector, 'tolist'):
@@ -103,7 +103,7 @@ class Attendance(db.Model):
     attendance_time = db.Column(db.Time, nullable=False)
     status = db.Column(db.String(20), default='PRESENT', nullable=False)
     confidence = db.Column(db.Float, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
     __table_args__ = (
         db.UniqueConstraint('student_id', 'attendance_date', name='unique_student_daily_attendance'),
